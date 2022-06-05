@@ -187,6 +187,55 @@ let rec cStmt stmt (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
         @ cStmt body varEnv funEnv
           @ [ Label labtest ]
             @ cExpr e varEnv funEnv @ [ IFNZRO labbegin ]
+    // add by tianhuiwen
+    | DoWhile (body, e) ->
+        let labbegin = newLabel ()
+        let labtest = newLabel ()
+
+        [ GOTO labbegin; Label labbegin ]
+          @ cStmt body varEnv funEnv
+            @ [ Label labtest ]
+              @ cExpr e varEnv funEnv
+                @ [ IFNZRO labbegin ]
+    | DoUntil (body, e) ->
+        let labbegin = newLabel ()
+        let labtest = newLabel ()
+
+        [ GOTO labbegin; Label labbegin ]
+        @ cStmt body varEnv funEnv
+          @ [ Label labtest ]
+            @ cExpr e varEnv funEnv
+              @ [ IFZERO labbegin ]
+    | Until (e, body) ->
+        let labbegin = newLabel ()
+        let labtest = newLabel ()
+
+        [ GOTO labtest; Label labbegin ]
+        @ cStmt body varEnv funEnv
+          @ [ Label labtest ]
+            @ cExpr e varEnv funEnv
+              @ [ IFZERO labbegin ]
+    | Switch (e, cases) ->
+        let rec matchcase c =
+            match c with
+            | Case (e1, body) :: tail ->
+                let labend = newLabel ()
+                let labfin = newLabel ()
+
+                [DUP]
+                  @ cExpr e1 varEnv funEnv
+                    @ [EQ]
+                      @ [ IFZERO labend ]
+                        @ cStmt body varEnv funEnv
+                          @ [ GOTO labfin ]
+                            @ [ Label labend ]
+                              @ matchcase tail
+                                @ [ Label labfin ]
+            | [] -> []
+        cExpr e varEnv funEnv 
+          @ matchcase cases
+            @[INCSP -1]
+    // add by tianhuiwen
     | Expr e -> cExpr e varEnv funEnv @ [ INCSP -1 ]
     | Block stmts ->
 
@@ -228,6 +277,8 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
     | Assign (acc, e) ->
         cAccess acc varEnv funEnv
         @ cExpr e varEnv funEnv @ [ STI ]
+    | PreInc acc     -> cAccess acc varEnv funEnv @ [DUP] @ [LDI] @ [CSTI 1] @ [ADD] @ [STI]
+    | PreDec acc     -> cAccess acc varEnv funEnv @ [DUP] @ [LDI] @ [CSTI 1] @ [SUB] @ [STI] 
     | CstI i -> [ CSTI i ]
     | Addr acc -> cAccess acc varEnv funEnv
     | Prim1 (ope, e1) ->
@@ -253,6 +304,16 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
              | ">" -> [ SWAP; LT ]
              | "<=" -> [ SWAP; LT; NOT ]
              | _ -> raise (Failure "unknown primitive 2"))
+    | Prim3(cond, e1, e2)    -> 
+        let labelse = newLabel ()
+        let labend = newLabel ()
+        cExpr cond varEnv funEnv
+        @ [ IFZERO labelse ]
+          @ cExpr e1 varEnv funEnv
+            @ [ GOTO labend ]
+              @ [ Label labelse ]
+                @ cExpr e2 varEnv funEnv
+                  @ [ Label labend ] 
     | Andalso (e1, e2) ->
         let labend = newLabel ()
         let labfalse = newLabel ()

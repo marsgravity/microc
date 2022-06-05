@@ -380,6 +380,7 @@ and stmtordec stmtordec locEnv gloEnv store =
 
 and eval e locEnv gloEnv store : int * store =
     match e with
+
     | Access acc ->
         let (loc, store1) = access acc locEnv gloEnv store
         (getSto store1 loc, store1)
@@ -387,6 +388,29 @@ and eval e locEnv gloEnv store : int * store =
         let (loc, store1) = access acc locEnv gloEnv store
         let (res, store2) = eval e locEnv gloEnv store1
         (res, setSto store2 loc res)
+    // add by tianhuiwen
+    | PreInc acc -> 
+        let (loc, store1) = access acc locEnv gloEnv store
+                        let tmp = getSto store1 loc
+                        (tmp + 1, setSto store1 loc (tmp + 1)) 
+    | PreDec acc -> 
+        let (loc, store1) = access acc locEnv gloEnv store
+                        let tmp = getSto store1 loc
+                        (tmp - 1, setSto store1 loc (tmp - 1)) 
+    | AssignPrim(ope, acc, e) ->
+      let (loc, store1) = access acc locEnv gloEnv store
+      let tmp = getSto store1 loc
+      let (res, store2) = eval e locEnv gloEnv store1
+      let num =
+          match ope with
+          | "+="  -> tmp + res
+          | "-="  -> tmp - res
+          | "*="  -> tmp * res
+          | "/="  -> tmp / res
+          | "%="  -> tmp % res
+          | _     -> failwith ("unknown primitive " + ope)
+      (num, setSto store2 loc num)
+    // add by tianhuiwen
     | CstI i -> (i, store)
     | Addr acc -> access acc locEnv gloEnv store
     | Prim1 (ope, e1) ->

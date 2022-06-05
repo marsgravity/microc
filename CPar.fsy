@@ -18,6 +18,7 @@ let nl = CstI 10 //  \n 的 ASCII 码
 %token <string> CSTSTRING NAME
 
 %token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE DO DOWHILE UNTIL DOUNTIL FOR SWITCH CASE
+%token PREINC PREDEC PLUSASSIGN MINUSASSIGN TIMESASSIGN DIVASSIGN MODASSIGN
 %token PLUS MINUS TIMES DIV MOD
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
@@ -166,6 +167,13 @@ Expr:
 ExprNotAccess:
     AtExprNotAccess                     { $1                  }
   | Access ASSIGN Expr                  { Assign($1, $3)      } // $1为左值
+  | PREINC Access                       { PreInc $2           } 
+  | PREDEC Access                       { PreDec $2           } 
+  | Access PLUSASSIGN Expr              { AssignPrim("+=", $1, $3)  }
+  | Access MINUSASSIGN Expr             { AssignPrim("-=", $1, $3) }
+  | Access TIMESASSIGN Expr             { AssignPrim("*=", $1, $3) }
+  | Access DIVASSIGN Expr               { AssignPrim("/=", $1, $3)   }
+  | Access MODASSIGN Expr               { AssignPrim("%=", $1, $3)   }
   | NAME LPAR Exprs RPAR                { Call($1, $3)        }  
   | NOT Expr                            { Prim1("!", $2)      }
   | PRINT Expr                          { Prim1("printi", $2) }

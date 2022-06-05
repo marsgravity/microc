@@ -244,6 +244,18 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
     match e with
     | Access acc     -> cAccess acc varEnv funEnv (LDI :: C)
     | Assign(acc, e) -> cAccess acc varEnv funEnv (cExpr e varEnv funEnv (STI :: C))
+    | PreInc acc     -> cAccess acc varEnv funEnv (DUP :: LDI :: CSTI 1 :: ADD :: STI :: C)
+    | PreDec acc     -> cAccess acc varEnv funEnv (DUP :: LDI :: CSTI 1 :: SUB :: STI :: C)
+    | AssignPrim(ope, acc, e) ->
+      cAccess acc varEnv funEnv
+        (GETBP :: LDI :: cExpr e varEnv funEnv
+           (match ope with
+            | "+="  -> ADD :: STI :: C
+            | "-="  -> SUB :: STI :: C
+            | "*="  -> MUL :: STI :: C
+            | "/="  -> DIV :: STI :: C
+            | "%="  -> MOD :: STI :: C
+            | _     -> failwith "unknown assign-primitive"))  
     | CstI i         -> addCST i C
     | Addr acc       -> cAccess acc varEnv funEnv C
     | Prim1(ope, e1) ->
