@@ -190,6 +190,16 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
       let (labelse, C2) = addLabel (cStmt stmt2 varEnv funEnv C1)
       cExpr e varEnv funEnv (IFZERO labelse 
        :: cStmt stmt1 varEnv funEnv (addJump jumpend C2))
+    // add by tianhuiwen
+    | For(e1, e2, e3, body) ->         
+      let labbegin = newLabel()
+      let (jumptest, C1) = 
+           makeJump (cExpr e2 varEnv funEnv (IFNZRO labbegin :: C))
+      cExpr e1 varEnv funEnv 
+        (addINCSP -1 (addJump jumptest 
+           (Label labbegin :: cStmt body varEnv funEnv
+             (cExpr e3 varEnv funEnv (addINCSP -1 C1)))))
+    // ad by tianhuiwen
     | While(e, body) ->
       let labbegin = newLabel()
       let (jumptest, C1) = 
@@ -244,8 +254,10 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
     match e with
     | Access acc     -> cAccess acc varEnv funEnv (LDI :: C)
     | Assign(acc, e) -> cAccess acc varEnv funEnv (cExpr e varEnv funEnv (STI :: C))
+    // add by tianhuiwen
     | PreInc acc     -> cAccess acc varEnv funEnv (DUP :: LDI :: CSTI 1 :: ADD :: STI :: C)
     | PreDec acc     -> cAccess acc varEnv funEnv (DUP :: LDI :: CSTI 1 :: SUB :: STI :: C)
+    // add by tianhuiwen
     | AssignPrim(ope, acc, e) ->
       cAccess acc varEnv funEnv
         (GETBP :: LDI :: cExpr e varEnv funEnv

@@ -391,12 +391,12 @@ and eval e locEnv gloEnv store : int * store =
     // add by tianhuiwen
     | PreInc acc -> 
         let (loc, store1) = access acc locEnv gloEnv store
-                        let tmp = getSto store1 loc
-                        (tmp + 1, setSto store1 loc (tmp + 1)) 
+        let tmp = getSto store1 loc
+        (tmp + 1, setSto store1 loc (tmp + 1)) 
     | PreDec acc -> 
         let (loc, store1) = access acc locEnv gloEnv store
-                        let tmp = getSto store1 loc
-                        (tmp - 1, setSto store1 loc (tmp - 1)) 
+        let tmp = getSto store1 loc
+        (tmp - 1, setSto store1 loc (tmp - 1)) 
     | AssignPrim(ope, acc, e) ->
       let (loc, store1) = access acc locEnv gloEnv store
       let tmp = getSto store1 loc

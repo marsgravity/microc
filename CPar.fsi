@@ -28,6 +28,13 @@ type token =
   | TIMES
   | DIV
   | MOD
+  | PREINC
+  | PREDEC
+  | PLUSASSIGN
+  | MINUSASSIGN
+  | TIMESASSIGN
+  | DIVASSIGN
+  | MODASSIGN
   | CHAR
   | ELSE
   | IF
@@ -77,6 +84,13 @@ type tokenId =
     | TOKEN_TIMES
     | TOKEN_DIV
     | TOKEN_MOD
+    | TOKEN_PREINC
+    | TOKEN_PREDEC
+    | TOKEN_PLUSASSIGN
+    | TOKEN_MINUSASSIGN
+    | TOKEN_TIMESASSIGN
+    | TOKEN_DIVASSIGN
+    | TOKEN_MODASSIGN
     | TOKEN_CHAR
     | TOKEN_ELSE
     | TOKEN_IF

@@ -235,8 +235,8 @@ let rec cStmt stmt (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
         cExpr e varEnv funEnv 
           @ matchcase cases
             @[INCSP -1]
-    // add by tianhuiwen
     | Expr e -> cExpr e varEnv funEnv @ [ INCSP -1 ]
+    // add by tianhuiwen
     | Block stmts ->
 
         let rec loop stmts varEnv =
