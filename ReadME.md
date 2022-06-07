@@ -1,69 +1,44 @@
-## 文件说明
+# **2021-22学年第2学期**
 
-### interpreter  解释器
+## **实 验 报 告**
 
-```sh
-Absyn.fs micro-C abstract syntax                              抽象语法
-grammar.txt informal micro-C grammar and parser specification 文法定义
-CLex.fsl micro-C lexer specification                          fslex词法定义
-CPar.fsy micro-C parser specification                         fsyacc语法定义
-Parse.fs micro-C parser                                       语法解析器
-Interp.fs micro-C interpreter                                 解释器
-example/ex1.c-ex25.c micro-C example programs                 例子程序
-interpc.fsproj                                                项目文件
+![zucc](img/zucc.png){width="1.5208333333333333in" height="1.5208333333333333in"}
 
-```
+-   课程名称: <u>编程语言原理与编译</u>
+-   实验项目: <u>大作业</u>
+-   专业班级: <u>计算1903</u>
+-   学生学号: <u>31901083</u>
+-   学生姓名: <u>田会文</u>
+-   实验指导教师: <u>张芸</u>
+-   [github链接](https://github.com/marsgravity/microc)
 
-### compiler  编译器
+## 简介
 
-```sh
-StackMachine.fs definition of micro-C stack machine instructions  VM 指令定义
-Machine.java micro-C stack machine in Java                   VM 实现 java
-machine.c micro-C stack machine in C                         VM 实现 c 
-machine.cs micro-C stack machine in CSharp                   VM 实现 c#
-machine.csproj  machine project file                         VM 项目文件
+基于microC的编译原理大作业，通过对解释器和编译器的代码开发，实现了一些C语言的语法。
 
-Comp.fs compile micro-C to stack machine code             编译器 输出 stack vm 指令序列
-Backend.fs x86_64 backend                                 编译器后端 翻译 stack vm 指令序列到 x86_64
-driver.c     runtime support                                 运行时支持程序
-prog0 example stack machine program: print numbers           字节码 案例，输出数字
-prog1 example stack machine program: loop 20m times          字节码 案例，循环2千万次
-microc.fsproj                                                编译器项目文件
-```
+## 结构
 
-### continuation compiler  优化编译器
 
-```sh
-Contcomp.fs compile micro-C backwards                   优化编译器
-microcc.fsproj                                          优化编译器项目文件
-```
 
-## 构建与执行
+- `CLex.fsl`——生成`CLex.fs`词法分析器
+- `CPar.fsy`——生成`CPar.fs`语法分析器
+- `Absyn.fs` ——抽象语法树
+- `Interp.fs`——解释器
+- `Comp.fs`——编译器
+- `Contcomp.fs`——优化编译器
+- `micorcc.fsproj`——项目文件
 
-### A 解释器
+- `Machine.java`——生成`Machine.class`虚拟机和`Machinetrace.class`堆栈追踪
 
-#### A.1  解释器 interpc.exe 构建
+- `example文件夹`——测试程序
 
-```sh
-# 编译解释器 interpc.exe 命令行程序 
-dotnet restore  interpc.fsproj   # 可选
-dotnet clean  interpc.fsproj     # 可选
-dotnet build -v n interpc.fsproj # 构建./bin/Debug/net6.0/interpc.exe ，-v n查看详细生成过程
+- `img文件夹`——运行结果
 
-# 执行解释器
-./bin/Debug/net6.0/interpc.exe example/ex1.c 8
-dotnet run --project interpc.fsproj example/ex1.c 8
-dotnet run --project interpc.fsproj -g example/ex1.c 8  # 显示token AST 等调试信息
 
-# one-liner 
-# 自行修改 interpc.fsproj  解释example目录下的源文件
-# 
-# <MyItem Include="example\function1.c" Args ="8"/> 
 
-dotnet build -t:ccrun interpc.fsproj
-```
+## 用法
 
-#### A.2 dotnet命令行fsi中运行解释器
+  #### 1. 解释器
 
 ```sh
 # 生成扫描器
@@ -79,42 +54,12 @@ dotnet fsi
 #load "Absyn.fs" "Debug.fs" "CPar.fs" "CLex.fs" "Parse.fs" "Interp.fs" "ParseAndRun.fs" ;; 
 
 open ParseAndRun;;    //导入模块 ParseAndRun
-fromFile "example\ex1.c";;    //显示 ex1.c的语法树
-run (fromFile "example\ex1.c") [17];; //解释执行 ex1.c
-run (fromFile "example\ex11.c") [8];; //解释执行 ex11.c
-
-Debug.debug <-  true  //打开调试
-
-run (fromFile "example\ex1.c") [8];; //解释执行 ex1.c
-run (fromFile "example\ex11.c") [8];; //解释执行 ex11.
+fromFile "example\1.c";;    //显示 1.c的语法树
+run (fromFile "example\1.c") [17];; //解释执行 1.c
 #q;;
-
 ```
 
-解释器的主入口 是 interp.fs 中的 run 函数，具体看代码的注释
-
-### B 编译器
-
-编译器生成 `example` 目录下的栈式虚拟机 `*.out` 文件，
-`*.out` 文件 用 `步骤 D` 中的虚拟机执行。
-
-#### B.1 microc编译器构建步骤
-
-```sh
-# 构建 microc.exe 编译器程序 
-dotnet restore  microc.fsproj # 可选
-dotnet clean  microc.fsproj   # 可选
-dotnet build  microc.fsproj   # 构建 ./bin/Debug/net6.0/microc.exe
-
-dotnet run --project microc.fsproj example/ex1.c    # 执行编译器，编译 ex1.c，并输出  ex1.out 文件
-dotnet run --project microc.fsproj -g example/ex1.c   # -g 查看调试信息
-
-./bin/Debug/net6.0/microc.exe -g example/ex1.c  # 直接执行构建的.exe文件，同上效果
-
-
-```
-
-#### B.2 dotnet fsi 中运行编译器
+  #### 2. 编译器
 
 ```sh
 # 启动fsi
@@ -126,187 +71,285 @@ dotnet fsi
 
 # 运行编译器
 open ParseAndComp;;
-compileToFile (fromFile "example\ex1.c") "ex1";; 
-
-Debug.debug <-  true   # 打开调试
-compileToFile (fromFile "example\ex4.c") "ex4";; # 观察变量在环境上的分配
+compileToFile (fromFile "example\1.c") "example\1";; 
 #q;;
-
-
-# fsi 中运行
-#time "on";;  // 打开时间跟踪
-
-# 参考A. 中的命令 比较下解释执行解释执行 与 编译执行 ex11.c 的速度
 ```
 
-#### B.3 编译并运行 example 目录下多个文件
-
-- 用到了 build  -t 任务 选项
-
-- 运行编译器生成的 *.out  文件 需要先完成 D.2 ，在当前目录生成虚拟机`machine.exe`
-
-```sh
-dotnet build -t:cclean microc.fsproj    # 清除编译器生成的文件  example/*.ins *.out
-dotnet build -t:ccrun microc.fsproj     # 编译并运行 example 目录下多个文件 
-
-```
-
-
-### C 优化编译器
-
-#### C.1  优化编译器 microcc.exe 构建步骤
-
-```sh
-
-dotnet restore  microcc.fsproj
-dotnet clean  microcc.fsproj
-dotnet build  microcc.fsproj           # 构建编译器
-
-dotnet run --project microcc.fsproj ex11.c    # 执行编译器
-./bin/Debug/net6.0/microcc.exe ex11.c  # 直接执行
-
-```
-
-#### C.2 dotnet fsi 中运行 backwards编译器  
+#### 3. 优化编译器
 
 ```sh
 dotnet fsi 
 
 #r "nuget: FsLexYacc";;
 
-#load "Absyn.fs"  "CPar.fs" "CLex.fs" "Debug.fs" "Parse.fs" "StackMachine.fs" "Backend.fs" "Contcomp.fs" "ParseAndComp.fs";;   
+#load "Absyn.fs"  "CPar.fs" "CLex.fs" "Debug.fs" "Parse.fs" "StackMachine.fs" "Backend.fs" "Contcomp.fs" "ParseAndContComp.fs";;   
 
 open ParseAndContcomp;;
-contCompileToFile (fromFile "example\ex11.c") "ex11.out";;
+contCompileToFile (fromFile "example\1.c") "example\1.out";;
 #q;;
 ```
 
-### D 虚拟机构建与运行
-虚拟机有 `c#` `c` `java` 三个版本
-- 运行下面的命令 查看 fac 0 , fac 3 的栈帧
-- 理解栈式虚拟机执行流程
-
-执行前，先在B中 编译出 *.out 虚拟机指令文件
-
-#### D.1 c#
+#### 4. 虚拟机构建与运行
 
 ```sh
-dotnet clean machine.csproj
-dotnet build machine.csproj   #构建虚拟机 machine.exe 
-
-./bin/Debug/net6.0/machine.exe ./example/ex9.out 3  # 运行虚拟机，执行 ex9.out 
-./bin/Debug/net6.0/machine.exe -t ./example/ex9.out 0  # 运行虚拟机，执行 ex9.out ，-t 查看跟踪信息
-./bin/Debug/net6.0/machine.exe -t ./example/ex9.out 3  // 运行虚拟机，执行 ex9.out ，-t 查看跟踪信息
+javac Machine.java # 构建 java 虚拟机
+java Machine ./example/9.out 3 # 执行虚拟机
+java Machinetrace ./example/9.out 0 # 堆栈追踪
 ```
 
-#### D.2 C
 
-```sh
-# 编译 c 虚拟机
-gcc -o machine.exe machine.c
 
-# 虚拟机执行指令
-machine.exe ./example/ex9.out 3
 
-# 调试执行指令
-machine.exe -trace ./example/ex9.out 0  # -trace  并查看跟踪信息
-machine.exe -trace ./example/ex9.out 3
+## 功能实现
 
+  #### 1. for循环
+
+测试样例
+
+```c
+void main(int n) {
+  int i;
+  for (i = 0; i < n; ++i) {
+    print i;
+  }
+}
 ```
 
-#### D.3 Java
+解释执行结果和语法树
 
-```sh
-javac Machine.java
-java Machine ./example/ex9.out 3
+![](img\for1.JPG)
 
-javac Machinetrace.java
-java Machinetrace ./example/ex9.out 0
-java Machinetrace ./example/ex9.out 3
+编译执行结果（**backwards**编译器）
+
+![](img\for2.JPG)
+
+虚拟机执行并查看堆栈变化
+
+![](img\for3.png)
+
+  #### 2. do while
+
+测试样例
+
+```c
+void main(int n)
+{
+  int i;
+  i = 0;
+  do {
+    print i;
+    i = i + 1;
+  } while (i < n);
+}
 ```
 
-#### E 编译到x86_64
+解释执行结果和语法树
 
-#### 预备软件
-nasm, gcc
+![](img\dowhile1.JPG)
 
-```sh
-#Linux
-$sudo apt-get install build-essential nasm gcc
+编译执行结果
 
-# Windows
+![](img\dowhile2.JPG)
 
-# nasm 汇编器
-https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/
+虚拟机执行并查看堆栈变化
 
-# gcc 编译器
-https://jmeubank.github.io/tdm-gcc/download/
+![](img\dowhile3.png)
 
-w10 在 9.2.0 版本测试通过
+  #### 3. until
 
+测试样例
+
+```c
+void main(int n)
+{
+  int i;
+  i = 0;
+  until (i > n) {
+    print i;
+    i = i + 1;
+  } 
+}
 ```
 
-#### 步骤
+解释执行结果和语法树
 
-栈式虚拟机指令编译到x86_64，简单示例
+![](img\until1.JPG)
 
-分步构建
+编译执行结果
 
-```sh
+![](img\until2.JPG)
 
-# 生成 ex1.asm 汇编码 nasm 格式
-dotnet run --project microc.fsproj example/ex1.c
+虚拟机执行并查看堆栈变化
 
-# 汇编生成目标文件
-nasm -f win64 example/ex1.asm -o example/ex1.o   # win
-# nasm -f elf64 ex1.asm -o ex1.o   # linux  
+![](img\until3.png)
 
-# 编译运行时文件
-gcc -c driver.c
+![](img\until4.png)
 
-# 链接运行时，生成可执行程序
-gcc -g -o example/ex1.exe driver.o example/ex1.o
+  #### 4. do until
 
-# 执行
-example/ex1.exe 8 
+测试样例
 
+```c
+void main(int n)
+{
+  int i;
+  i = 0;
+  do {
+    print i;
+    i = i + 1;
+  } until (i > n);
+}
 ```
 
-单步构建
+解释执行结果和语法树
 
-```sh
-# 使用 build target 编译 ex1.c
-# 可修改 microc.fsproj 编译其他案例文件
+![](img\dountil.JPG)
 
-dotnet build -t:ccrunx86 microc.fsproj
+编译执行结果
 
+![](img\dountil2.JPG)
+
+虚拟机执行并查看堆栈变化
+
+![](img\dountil3.png)
+
+  #### 5. switch case
+
+测试样例
+
+```c
+void main(int n) {
+  switch(n) {
+    case 0: print 0;
+    case 1: print 1;
+    case 2: print 2;
+  }
+}
 ```
 
-#### 调用约定
+解释执行结果和语法树
 
-- caller
-  - 调用函数前，在栈上放置函数参数，个数为m
-  - 将rbp入栈，调用函数
-- callee
-  - 保存返回地址r，老的栈帧指针bp
-  - 将参数搬移到本函数的栈帧初始位置
-  - 将rbp设置到第一个参数的位置
-  - rbx 保存函数的返回值
+![](img\switchcase1.JPG)
 
-#### 数据在栈上的保存方式
+编译执行结果
 
-- 如数组 a[2] 的元素按次序排在栈上，末尾保存数组变量a，内容是首元素 e0的地址
-- e0, e1, a  
+![](img\switchcase2.JPG)
 
-访问数组，先通过`BP`得到`a`的位置，然后通过`a` 得到首地址 e0，最后计算数组下标偏移地址，访问对应数组元素
+虚拟机执行并查看堆栈变化
 
-- 全局变量在栈上依次保存，x86 汇编中，glovar 是全局变量的起始地址
+![](img\switchcase3.png)
 
-#### x86 bugs
+  #### 6. 自增自减
 
-- *(p + 2) 指针运算不支持
+测试样例
 
-#### tasks.json
+```c
+void main(int n){
+  print n;
+  ++n;
+  print n;
+  --n;
+  print n;
+}
+```
 
-默认任务`build & run`
-- Ctrl+Shift+B
+解释执行结果和语法树
+
+![](img\++--1.JPG)
+
+编译执行结果（**backwards**编译器）
+
+![](img\++--2.JPG)
+
+虚拟机执行并查看堆栈变化
+
+![](img\++--3.png)
+
+  #### 7. += -= *= /= %=
+
+测试样例
+
+```c
+void main(int n){
+  n += 2;
+  print n;
+  n -= 2;
+  print n;
+  int i;
+  i = 2;
+  n *= i;
+  print n;
+  n /= i;
+  print n;
+  n %= i;
+  print n;
+}
+```
+
+解释执行结果和语法树
+
+![](img\运算=1.JPG)
+
+编译执行结果（**backwards**编译器）
+
+![](img\运算=2.JPG)
+
+虚拟机执行并查看堆栈变化
+
+![](img\运算=3.png)
+
+![](img\运算=4.png)
+
+  #### 8. 三目运算符
+
+测试样例
+
+```c
+void main(int n) {
+    int i;
+    i = n > 5 ? 100 : -100;
+    print i;
+}
+```
+
+解释执行结果和语法树
+
+![](img\三目运算符1.JPG)
+
+编译执行结果
+
+![](img\三目运算符2.JPG)
+
+虚拟机执行并查看堆栈变化
+
+![](img\三目运算符3.png)
+
+## 自评等级 
+
+| 功能           | 评分 |
+| -------------- | ---- |
+| for 循环       | ⭐⭐⭐⭐ |
+| while          | ⭐⭐⭐⭐ |
+| do while       | ⭐⭐⭐⭐ |
+| until          | ⭐⭐⭐  |
+| do until       | ⭐⭐⭐  |
+| switch case    | ⭐⭐⭐  |
+| 自增自减       | ⭐    |
+| += -= *= /= %= | ⭐⭐⭐⭐ |
+| 三目运算符     | ⭐⭐⭐⭐ |
+
+## 提交记录及分工
+
+- 分工
+
+  | 姓名   | 分工 |
+  | ------ | ---- |
+  | 田会文 | 全部 |
+
+- 提交记录截图
+
+  
+
+## 心得体会
+
+​	编译原理是一门非常有意思的课程，能够亲自动手实践完成一个全新的语言，是一件很有成就感的事。同时编译原理对我来说也是一门比较难的课程，其中概念抽象而难理解。因为我能力不足，大作业最终做了在现有代码上进行改进的工作。通过该课程的学习，我对编程原理有了更深的理解，明白了其内部的运行机制。在本次实验过程中，我学习了一种新的语言 F# ，并对之前从未接触过的函数式编程有了一定的了解。这门课程的学习，开阔了我在编写代码上的视野，收获颇丰。
