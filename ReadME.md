@@ -348,7 +348,7 @@ void main(int n) {
 
 - 提交记录截图
 
-  
+  ![1](./img/github提交记录.JPG)
 
 ## 心得体会
 
