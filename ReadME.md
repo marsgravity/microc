@@ -117,15 +117,15 @@ void main(int n) {
 
 解释执行结果和语法树
 
-![](img\for1.JPG)
+![](img/for1.JPG)
 
 编译执行结果（**backwards**编译器）
 
-![](img\for2.JPG)
+![](img/for2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\for3.png)
+![](img/for3.png)
 
   #### 2. do while
 
@@ -145,15 +145,15 @@ void main(int n)
 
 解释执行结果和语法树
 
-![](img\dowhile1.JPG)
+![](img/dowhile1.JPG)
 
 编译执行结果
 
-![](img\dowhile2.JPG)
+![](img/dowhile2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\dowhile3.png)
+![](img/dowhile3.png)
 
   #### 3. until
 
@@ -173,17 +173,17 @@ void main(int n)
 
 解释执行结果和语法树
 
-![](img\until1.JPG)
+![](img/until1.JPG)
 
 编译执行结果
 
-![](img\until2.JPG)
+![](img/until2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\until3.png)
+![](img/until3.png)
 
-![](img\until4.png)
+![](img/until4.png)
 
   #### 4. do until
 
@@ -203,15 +203,15 @@ void main(int n)
 
 解释执行结果和语法树
 
-![](img\dountil.JPG)
+![](img/dountil.JPG)
 
 编译执行结果
 
-![](img\dountil2.JPG)
+![](img/dountil2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\dountil3.png)
+![](img/dountil3.png)
 
   #### 5. switch case
 
@@ -229,15 +229,15 @@ void main(int n) {
 
 解释执行结果和语法树
 
-![](img\switchcase1.JPG)
+![](img/switchcase1.JPG)
 
 编译执行结果
 
-![](img\switchcase2.JPG)
+![](img/switchcase2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\switchcase3.png)
+![](img/switchcase3.png)
 
   #### 6. 自增自减
 
@@ -255,15 +255,15 @@ void main(int n){
 
 解释执行结果和语法树
 
-![](img\++--1.JPG)
+![](img/++--1.JPG)
 
 编译执行结果（**backwards**编译器）
 
-![](img\++--2.JPG)
+![](img/++--2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\++--3.png)
+![](img/++--3.png)
 
   #### 7. += -= *= /= %=
 
@@ -288,17 +288,17 @@ void main(int n){
 
 解释执行结果和语法树
 
-![](img\运算=1.JPG)
+![](img/运算=1.JPG)
 
 编译执行结果（**backwards**编译器）
 
-![](img\运算=2.JPG)
+![](img/运算=2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\运算=3.png)
+![](img/运算=3.png)
 
-![](img\运算=4.png)
+![](img/运算=4.png)
 
   #### 8. 三目运算符
 
@@ -314,15 +314,15 @@ void main(int n) {
 
 解释执行结果和语法树
 
-![](img\三目运算符1.JPG)
+![](img/三目运算符1.JPG)
 
 编译执行结果
 
-![](img\三目运算符2.JPG)
+![](img/三目运算符2.JPG)
 
 虚拟机执行并查看堆栈变化
 
-![](img\三目运算符3.png)
+![](img/三目运算符3.png)
 
 ## 自评等级 
 
